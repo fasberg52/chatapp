@@ -1,4 +1,4 @@
-<%- include("../includes/head.ejs") %>
+<%- include("./includes/head.ejs") %>
 <div class="main-content" id="panel">
   <div class="container-fluid pt-3">
     <div class="row removable">
@@ -27,6 +27,7 @@
                         </div>
                       </div>
                     </form>
+                    <% if(user) { %>
                     <div class="card-body p-2">
                       <a
                         href="javascript:;"
@@ -35,7 +36,7 @@
                         <div class="d-flex p-2">
                           <img
                             alt="Image"
-                            src="https://images.unsplash.com/photo-1529068755536-a5ade0dcb4e8?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxzZWFyY2h8MzV8fHBvcnRyYWl0fGVufDB8MnwwfHw%3D&amp;auto=format&amp;fit=crop&amp;w=800&amp;q=60"
+                            src="/assets/image/images.png"
                             class="avatar shadow"
                           />
                           <div class="ml-2">
@@ -43,9 +44,8 @@
                               class="justify-content-between align-items-center"
                             >
                               <h4 class="text-white text-right mb-0 mt-1 mr-1">
-                                اصغر شلغم<span
-                                  class="badge badge-success"
-                                ></span>
+                                sadads
+                                <span class="badge badge-success"></span>
                               </h4>
                               <p
                                 class="text-white mb-0 mr-1 text-xs font-weight-normal"
@@ -56,31 +56,10 @@
                           </div>
                         </div>
                       </a>
-                      <a href="javascript:;" class="d-block p-2">
-                        <div class="d-flex p-2">
-                          <img
-                            alt="Image"
-                            src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8cG9ydHJhaXR8ZW58MHwyfDB8fA%3D%3D&amp;auto=format&amp;fit=crop&amp;w=800&amp;q=60"
-                            class="avatar"
-                          />
-                          <div class="ml-2">
-                            <div
-                              class="justify-content-between align-items-center"
-                            >
-                              <h4 class="text-dark text-right mb-0 mt-1 mr-1">
-                                حسن عمادی
-                                <span class="badge badge-success"></span>
-                              </h4>
-                              <p
-                                class="mb-0 mr-1 text-xs font-weight-normal text-muted"
-                              >
-                                متن آخرین پیام...
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      </a>
                     </div>
+                    <% } else { %>
+                    <h1>مخاطبی وجود ندارد</h1>
+                    <% } %>
                   </div>
                 </div>
                 <div class="col-lg-6">
@@ -88,56 +67,20 @@
                     <div class="card-header shadow-xl">
                       <div class="row">
                         <div class="col-md-8 d-flex justify-content-start">
-                          <ul
-                            class="navbar-nav align-items-center ml-auto ml-md-0"
-                          >
-                            <li class="nav-item dropdown">
-                              <a
-                                class="nav-link pr-0"
-                                href="#"
-                                role="button"
-                                data-toggle="dropdown"
-                                aria-haspopup="true"
-                                aria-expanded="false"
-                              >
-                                <div class="media align-items-center">
-                                  <span class="avatar avatar-sm">
-                                    <img
-                                      alt="Image placeholder"
-                                      src="./assets/image/img_avatar.png"
-                                    />
-                                  </span>
-                                  <p class="mb-0 mr-2">محمدرضا طاهریان</p>
-                                </div>
-                              </a>
-                              <div class="dropdown-menu dropdown-menu-right">
-                                <div class="dropdown-header noti-title">
-                                  <h6 class="text-overflow m-0">Welcome!</h6>
-                                </div>
-                                <a href="#!" class="dropdown-item">
-                                  <i class="fa fa-user"></i>
-                                  <span>My profile</span>
-                                </a>
-                                <a href="#!" class="dropdown-item">
-                                  <i class="fa fa-tools"></i>
-                                  <span>Settings</span>
-                                </a>
-                                <a href="#!" class="dropdown-item">
-                                  <i class="far fa-calendar"></i>
-                                  <span>Activity</span>
-                                </a>
-                                <a href="#!" class="dropdown-item">
-                                  <i class="fa fa-phone"></i>
-                                  <span>پشتیبانی</span>
-                                </a>
-                                <div class="dropdown-divider"></div>
-                                <a href="#!" class="dropdown-item">
-                                  <i class="fa fa -sign-out-alt"></i>
-                                  <span>خارج شدن</span>
-                                </a>
-                              </div>
-                            </li>
-                          </ul>
+                          <div class="media align-items-center">
+                            <span class="avatar avatar-sm">
+                              <img
+                                alt="Image placeholder"
+                                src="/assets/image/img_avatar.png"
+                              />
+                            </span>
+
+                            <span>
+                              <% if(user) { %>
+                              <p class="mb-0 mr-2"><%= user.name %></p>
+                              <% } %>
+                            </span>
+                          </div>
                         </div>
                         <div
                           class="col-md-4 d-flex align-items-center justify-content-end"
@@ -174,56 +117,37 @@
                                   </button>
                                 </div>
                                 <div class="modal-body">
-                                  <form action="" method="post">
+                                  <form id="add-conversation-form">
                                     <div class="form-group custom-form-group">
                                       <label
                                         for="recipient-name"
                                         class="col-form-label"
-                                        >موبایل</label
+                                        >ایمیل</label
                                       >
+
                                       <input
                                         type="text"
                                         class="form-control custom-form-contorl"
-                                        id="recipient-name"
+                                        id="user"
+                                        name="user"
                                       />
-                                    </div>
-                                    <div class="form-group custom-form-group">
-                                      <label
-                                        for="recipient-name"
-                                        class="col-form-label"
-                                        >نام و نام خانوادگی</label
-                                      >
+                                      <p
+                                        class="error b-danger text-center text-dark"
+                                      ></p>
+                                      <div class="search_users"></div>
                                       <input
-                                        type="text"
-                                        class="form-control custom-form-contorl"
-                                        id="recipient-name"
+                                        type="submit"
+                                        value="Submit"
+                                        class="d-none"
                                       />
                                     </div>
                                   </form>
-                                </div>
-                                <div class="modal-footer">
-                                  <button
-                                    type="button"
-                                    class="btn btn-secondary"
-                                    data-dismiss="modal"
-                                  >
-                                    بستن
-                                  </button>
-                                  <button type="button" class="btn btn-primary">
-                                    افزودن کاربر
-                                  </button>
                                 </div>
                               </div>
                             </div>
                           </div>
                           <i class="fa-solid fa-arrows-rotate mr-2"></i>
                           <form action="logout" method="post">
-                            <input
-                              type="hidden"
-                              name="_csrf"
-                              value="<%= csrfToken %>"
-                            />
-
                             <button type="submit" class="btn p-2">
                               <i
                                 class="fa-solid fa-right-from-bracket"
@@ -234,12 +158,13 @@
                         </div>
                       </div>
                     </div>
+
                     <div class="card-body overflow-auto overflow-x-hidden">
                       <div class="row justify-content-start mb-4">
                         <div class="col-auto">
                           <div class="card">
                             <div class="card-body p-2">
-                              <p class="mb-1">سلام اصغر چت اپ شلغمتو نوشتی ؟</p>
+                              <p class="mb-1">asd</p>
                               <div
                                 class="d-flex align-items-center text-sm opacity-6"
                               >
@@ -247,7 +172,7 @@
                                   class="far fa-clock mr-1"
                                   aria-hidden="true"
                                 ></i>
-                                <small>15:14</small>
+                                <small>12</small>
                               </div>
                             </div>
                           </div>
@@ -278,42 +203,6 @@
                           <span class="badge text-dark">چهارشنبه, 13:27</span>
                         </div>
                       </div>
-                      <div class="row justify-content-start mb-4">
-                        <div class="col-auto">
-                          <div class="card">
-                            <div class="card-body p-2">
-                              <p class="mb-1">خب دیگه چه خبر تو چکار میکنی؟</p>
-                              <div
-                                class="d-flex align-items-center text-sm opacity-6"
-                              >
-                                <i
-                                  class="far fa-clock mr-1"
-                                  aria-hidden="true"
-                                ></i>
-                                <small>15:31</small>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row justify-content-end text-right mb-4">
-                        <div class="col-auto">
-                          <div class="card bg-gradient-primary text-white">
-                            <div class="card-body p-2">
-                              <p class="mb-1">خوبم دارم روی پروژه کار میکنم</p>
-                              <div
-                                class="d-flex align-items-center justify-content-end text-sm opacity-6"
-                              >
-                                <i
-                                  class="fa fa-check-double mr-1 text-xs"
-                                  aria-hidden="true"
-                                ></i>
-                                <small>16:42</small>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
 
                       <div class="row justify-content-start">
                         <div class="col-auto">
@@ -325,18 +214,22 @@
                         </div>
                       </div>
                     </div>
+
                     <div class="card-footer d-block">
-                      <form class="align-items-center">
+                      <form class="align-items-center" action="/" method="post">
                         <div class="input-group mb-3">
                           <input
                             type="text"
                             placeholder="پیام خود را بنویسید"
                             class="form-control"
+                            name="message"
                             aria-label="Amount (to the nearest dollar)"
                           />
                           <div class="input-group-append custom-hover">
                             <span class="input-group-text">
-                              <i class="fa fa-paper-plane"></i>
+                              <button type="submit" class="btn">
+                                <i class="fa fa-paper-plane"></i>
+                              </button>
                             </span>
                           </div>
                         </div>
@@ -355,7 +248,7 @@
                         <a href="javascript:;" class="d-block p-2">
                           <img
                             alt="Image"
-                            src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxzZWFyY2h8Njh8fHBvcnRyYWl0fGVufDB8MnwwfHw%3D&amp;auto=format&amp;fit=crop&amp;w=800&amp;q=60"
+                            src="/assets/image/img_avatar.png"
                             class="avatar avatar-lg shadow mb-0"
                           />
                         </a>
@@ -363,7 +256,7 @@
                           <div
                             class="justify-content-between align-items-center"
                           >
-                            <h3 class="mb-0 mt-1">علی اسلامی</h3>
+                            <h3 class="mb-0 mt-1"><%= user.name %></h3>
 
                             <a href="" class="text-sm">مشاهده پروفایل</a>
                           </div>
@@ -371,21 +264,26 @@
                       </div>
                       <hr class="my-3" />
                       <div class="mx-3">
-                        <h4 class="mb-0 text-right">بیو:</h4>
-                        <p
+                        <h4 class="mb-0 text-right">ایمیل:</h4>
+
+                        <span
                           class="text-sm text-muted font-weight-normal text-right"
                         >
-                          برنامه نویس
-                        </p>
+                          <p class="mb-0 mr-2"><%= user.email %></p>
+                        </span>
                       </div>
                       <hr class="my-3" />
                       <div class="mx-3">
                         <div class="d-flex align-items-center">
                           <i class="fa fa-phone opacity-7 ml-1"></i>
                           <div class="ml-3">
-                            <h5 class="mb-0 text-right">شماره همراه</h5>
-                            <span class="text-sm text-primary"
-                              >0723922012
+                            <h5 class="mb-0 text-right">آیدی</h5>
+                            <span class="text-sm text-primary">
+                              <span
+                                class="text-sm text-muted font-weight-normal text-right"
+                              >
+                                <p class="mb-0 mr-2"><%= user._id %></p>
+                              </span>
                             </span>
                           </div>
                         </div>
@@ -401,5 +299,108 @@
     </div>
   </div>
   <!-- Footer -->
-  <%- include("../includes/end.ejs") %>
+  <%- include("./includes/end.ejs") %>
 </div>
+<script>
+  let typingTimer;
+  const doneTypingInterval = 500;
+  const input = document.querySelector("input#user");
+  const conversation_list = document.querySelector("#conversation-list");
+  let users_placeholder = document.querySelector(".search_users");
+
+  input.addEventListener("keyup", function () {
+    clearTimeout(typingTimer);
+    // reset
+    users_placeholder.style.display = "none";
+
+    if (input.value) {
+      typingTimer = setTimeout(searchUsers, doneTypingInterval); //user is "finished typing," send search request
+    }
+  });
+
+  //on keydown, clear the countdown
+  input.addEventListener("keydown", function () {
+    clearTimeout(typingTimer);
+  });
+
+  async function searchUsers() {
+  try {
+    let response = await fetch("/inbox/search", {
+      method: "POST",
+      body: JSON.stringify({
+        user: input.value,
+      }),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Network response was not ok.");
+    }
+
+    let result = await response.json();
+
+    // handle error and response
+    if (result.errors) {
+      const errorplaceholder = document.querySelector("p.error");
+      errorplaceholder.textContent = result.errors.common.msg;
+      errorplaceholder.style.display = "block";
+    } else {
+      if (result.length > 0) {
+        let generatedHtml = `<ul>`;
+        result.forEach((user) => {
+          generatedHtml += `<li onclick="createConversation('${user._id}', '${user.name}')">
+                <div class="user bg-primary">
+                  <div class="username">${user.name}</div>
+                </div>
+              </li>`;
+        });
+        generatedHtml += `</ul>`;
+        users_placeholder.innerHTML = generatedHtml;
+        users_placeholder.style.display = "block";
+      }
+    }
+  } catch (err) {
+    console.log(`Error: ${err}`);
+  }
+}
+
+async function createConversation(participant_id, name) {
+  try {
+    const response = await fetch("/inbox/conversation", {
+      method: "POST",
+      body: JSON.stringify({
+        participant: name,
+        id: participant_id,
+      }),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Network response was not ok.");
+    }
+
+    const result = await response.json();
+
+    if (!result.errors) {
+      // reset
+      users_placeholder.style.display = "none";
+      input.value = name;
+      // reload the page after 1 second
+      setTimeout(() => {
+        location.reload();
+      }, 1000);
+    } else {
+      throw new Error(result.errors.common.msg);
+    }
+  } catch (err) {
+    console.log(`Error: ${err}`);
+  }
+}
+
+  
+  
+</script>

@@ -1,5 +1,5 @@
 const bcrypt = require("bcryptjs");
-const User = require("../models/user");
+const User = require("../models/People");
 const sendEmail = require("../util/email");
 const crypto = require("crypto");
 
@@ -20,7 +20,6 @@ exports.getLogin = (req, res) => {
   });
 };
 
-
 exports.postLogin = (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
@@ -38,7 +37,7 @@ exports.postLogin = (req, res) => {
         req.session.user = user;
         return req.session.save((err) => {
           console.log(err);
-          res.redirect("/");
+          res.redirect("/inbox");
         });
       }
       req.flash("error", "پسورد شما اشتباه است !");
