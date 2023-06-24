@@ -1,11 +1,11 @@
 const User = require("../models/People");
 const Conversation = require("../models/Conversation");
 const Message = require("../models/Message");
-const escapeRegExp = require("../util/escape");
+
 
 async function getInbox(req, res, next) {
   try {
-    //debug this code req.user.userid
+    
     const userid = req.session.user._id;
     const user = req.session.user;
     const conversations = await Conversation.find({
@@ -22,16 +22,21 @@ async function getInbox(req, res, next) {
 }
 
 async function searchUser(req, res, next) {
-  const user = req.body.user;
+  const user = req.body.userSearch;
+  console.log(`>>>>>>>>> ${typeof(user)}`)
+  console.log("Request body:", req.body);
 
-  const email_search_regex = new RegExp(escapeRegExp(user), "i");
 
   try {
     const users = await User.find({
-      email: email_search_regex,
-    });
+      email: user,
+      isAuthenticated: req.session.isLoggedIn,
+    }
+   
+    );
 
-    res.json(users);
+    res.json(users)
+    console.log(`>>>>>>>>> ${users}`)
   } catch (error) {
     console.error("Search for users Error:", error);
     res
@@ -74,18 +79,3 @@ module.exports = {
   addConversation,
 };
 
-// exports.getChatRoom = (req, res) => {
-//   Message.find().then((message) => {
-//     res.render("chatroom/index", {
-//       message: message,
-//       pageTitle: "message user",
-//       path: "/",
-//       isAuthenticated: req.session.isLoggedIn,
-//     });
-//   });
-//   res.render("chatroom/index", {
-//     path: "/",
-//     pageTitle: "چت اپ",
-//     isAuthenticated: req.session.isLoggedIn,
-//   });
-// };

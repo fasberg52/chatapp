@@ -117,7 +117,10 @@
                                   </button>
                                 </div>
                                 <div class="modal-body">
-                                  <form id="add-conversation-form">
+                                  <form
+                                    id="add-conversation-form"
+                                    
+                                  >
                                     <div class="form-group custom-form-group">
                                       <label
                                         for="recipient-name"
@@ -128,8 +131,8 @@
                                       <input
                                         type="text"
                                         class="form-control custom-form-contorl"
-                                        id="user"
-                                        name="user"
+                                        id="userSearch"
+                                        name="userSearch"
                                       />
                                       <p
                                         class="error b-danger text-center text-dark"
@@ -304,7 +307,7 @@
 <script>
   let typingTimer;
   const doneTypingInterval = 500;
-  const input = document.querySelector("input#user");
+  const input = document.querySelector("input#userSearch");
   const conversation_list = document.querySelector("#conversation-list");
   let users_placeholder = document.querySelector(".search_users");
 
@@ -324,83 +327,83 @@
   });
 
   async function searchUsers() {
-  try {
-    let response = await fetch("/inbox/search", {
-      method: "POST",
-      body: JSON.stringify({
-        user: input.value,
-      }),
-      headers: {
-        "Content-type": "application/json; charset=UTF-8",
-      },
-    });
+    try {
+      let response = await fetch("/inbox/search", {
+        method: "POST",
+        body: JSON.stringify({
+          userSearch: input.value,
+        }),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
+      });
+      console.log("Request sent.");
 
-    if (!response.ok) {
-      throw new Error("Network response was not ok.");
-    }
+      if (!response.ok) {
+        throw new Error("Network response was not ok.");
+      }
 
-    let result = await response.json();
+      let result = await response.json();
+      console.log("response received");
 
-    // handle error and response
-    if (result.errors) {
-      const errorplaceholder = document.querySelector("p.error");
-      errorplaceholder.textContent = result.errors.common.msg;
-      errorplaceholder.style.display = "block";
-    } else {
-      if (result.length > 0) {
-        let generatedHtml = `<ul>`;
-        result.forEach((user) => {
-          generatedHtml += `<li onclick="createConversation('${user._id}', '${user.name}')">
+      // handle error and response
+      if (result.errors) {
+        const errorplaceholder = document.querySelector("p.error");
+        errorplaceholder.textContent = result.errors.common.msg;
+        errorplaceholder.style.display = "block";
+      } else {
+        if (result.length > 0) {
+          let generatedHtml = `<ul>`;
+          result.forEach((user) => {
+            generatedHtml += `<li onclick="createConversation('${user._id}', '${user.name}')">
                 <div class="user bg-primary">
                   <div class="username">${user.name}</div>
                 </div>
               </li>`;
-        });
-        generatedHtml += `</ul>`;
-        users_placeholder.innerHTML = generatedHtml;
-        users_placeholder.style.display = "block";
+          });
+          generatedHtml += `</ul>`;
+          users_placeholder.innerHTML = generatedHtml;
+          users_placeholder.style.display = "block";
+          console.log("generatedHtml");
+        }
       }
+    } catch (err) {
+      console.log(`Error: ${err}`);
     }
-  } catch (err) {
-    console.log(`Error: ${err}`);
   }
-}
 
-async function createConversation(participant_id, name) {
-  try {
-    const response = await fetch("/inbox/conversation", {
-      method: "POST",
-      body: JSON.stringify({
-        participant: name,
-        id: participant_id,
-      }),
-      headers: {
-        "Content-type": "application/json; charset=UTF-8",
-      },
-    });
+  async function createConversation(participant_id, name) {
+    try {
+      const response = await fetch("/inbox/conversation", {
+        method: "POST",
+        body: JSON.stringify({
+          participant: name,
+          id: participant_id,
+        }),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
+      });
 
-    if (!response.ok) {
-      throw new Error("Network response was not ok.");
+      if (!response.ok) {
+        throw new Error("Network response was not ok.");
+      }
+
+      const result = await response.json();
+
+      if (!result.errors) {
+        // reset
+        users_placeholder.style.display = "none";
+        input.value = name;
+        // reload the page after 1 second
+        setTimeout(() => {
+          location.reload();
+        }, 1000);
+      } else {
+        throw new Error(result.errors.common.msg);
+      }
+    } catch (err) {
+      console.log(`Error: ${err}`);
     }
-
-    const result = await response.json();
-
-    if (!result.errors) {
-      // reset
-      users_placeholder.style.display = "none";
-      input.value = name;
-      // reload the page after 1 second
-      setTimeout(() => {
-        location.reload();
-      }, 1000);
-    } else {
-      throw new Error(result.errors.common.msg);
-    }
-  } catch (err) {
-    console.log(`Error: ${err}`);
   }
-}
-
-  
-  
 </script>
