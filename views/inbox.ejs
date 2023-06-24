@@ -29,13 +29,11 @@
                     </form>
 
                     <div class="card-body p-2" id="conversation-list">
-                      <% data.forEach((conversation) => { %> 
-                      
-                     
-
-                      <a
-                        href="javascript:;"
+                      <% data.forEach((conversation) => { %> <%
+                      if(conversation.creator.id == loggedInUser.userid) { %>
+                      <div
                         class="d-block p-2 rounded-lg bg-gradient-primary mb-2"
+                        onclick="getMessages('<%= conversation._id %>', '<%= conversation.participant.name %>')"
                       >
                         <div class="d-flex p-2">
                           <img
@@ -65,16 +63,46 @@
                             </div>
                           </div>
                         </div>
-                      </a>
-                      
-                      
-                      
-                      <% }); %>
+                      </div>
 
+                      <% } else { %>
 
-                      
+                      <div
+                        class="d-block p-2 rounded-lg bg-gradient-primary mb-2"
+                        onclick="getMessages('<%= conversation._id %>', '<%= conversation.creator.name %>')"
+                      >
+                        <div class="d-flex p-2">
+                          <img
+                            alt="Image"
+                            src="/assets/image/images.png"
+                            class="avatar shadow"
+                          />
+                          <div class="ml-2">
+                            <div
+                              class="justify-content-between align-items-center"
+                            >
+                              <div class="text-right mb-0 mt-1 mr-1">
+                                <h4 class="text-white mr-2">
+                                  <%= conversation.creator.name %>
+                                </h4>
+
+                                <div
+                                  class="conversation-date text-white mr-2 h6"
+                                >
+                                  <%=
+                                  moment(conversation.last_updated).locale('fa').fromNow('YYYY/M/D');
+                                  %>
+                                </div>
+
+                                <span class="badge badge-success"></span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <% } %> <% }); %>
                     </div>
-
                   </div>
                 </div>
                 <div class="col-lg-6">
@@ -174,7 +202,10 @@
                       </div>
                     </div>
 
-                    <div class="card-body overflow-auto overflow-x-hidden">
+                    <div
+                      class="card-body overflow-auto overflow-x-hidden"
+                      id="chat-message-list"
+                    >
                       <div class="row justify-content-start mb-4">
                         <div class="col-auto">
                           <div class="card">
@@ -231,7 +262,12 @@
                     </div>
 
                     <div class="card-footer d-block">
-                      <form class="align-items-center" action="/" method="post">
+                      <form
+                        class="align-items-center"
+                        id="chat-form"
+                        enctype="multipart/form-data"
+                        method="post"
+                      >
                         <div class="input-group mb-3">
                           <input
                             type="text"
@@ -322,6 +358,11 @@
   const input = document.querySelector("input#user");
   const conversation_list = document.querySelector("#conversation-list");
   let users_placeholder = document.querySelector(".search_users");
+  const form = document.querySelector("#chat-form");
+  const messageContainer = document.querySelector("#chat-message-list");
+  const loggedinUserId = "<%= loggedInUser.userid %>";
+  let participant = null;
+  let current_conversation_id;
 
   input.addEventListener("keyup", function () {
     clearTimeout(typingTimer);
@@ -417,4 +458,105 @@
       console.log(`Error: ${err}`);
     }
   }
+
+  async function getMessages(conversation_id, current_conversation_name) {
+    // messages failure toast
+    const messagesFailureToast = Toastify({
+      text: "Error loading messages!",
+      duration: 1000,
+    });
+
+    let response = await fetch(`/inbox/messages/${conversation_id}`);
+    const result = await response.json();
+
+    if (!result.errors && result.data) {
+      form.style.visibility = "visible";
+
+      const { data, user, conversation_id } = result;
+
+      participant = data.participant;
+      current_conversation_id = conversation_id;
+
+      if (data.messages) {
+        let allMessages = "";
+
+        if (data.messages.length > 0) {
+          data.messages.forEach((message) => {
+            let senderAvatar = message.sender.avatar
+              ? `./uploads/avatars/${message.sender.avatar}`
+              : "./images/nophoto.png";
+            const messageClass =
+              message.sender.id === loggedinUserId
+                ? "you-message"
+                : "other-message";
+            const showAvatar =
+              message.sender.id === loggedinUserId
+                ? ""
+                : `<img src="${senderAvatar}" alt="${message.sender.name}" />`;
+
+            // message attachments
+            let attachments = '<div class="attachments">';
+
+            if (message.attachment && message.attachment.length > 0) {
+              message.attachment.forEach((attachment) => {
+                attachments += `<img src="./uploads/attachments/${attachment}" /> `;
+              });
+            }
+
+            attachments += "</div>";
+
+            // final message html
+            let messageHTML = `<div class="message-row ${messageClass}"><div class="message-content">
+              ${showAvatar}
+              <div class="message-text">${message.text}</div>
+              ${attachments}
+              <div class="message-time">${moment(
+                message.date_time
+              ).fromNow()}</div>
+            </div></div>`;
+
+            allMessages += messageHTML;
+            messageContainer.innerHTML = allMessages;
+          });
+        } else if (data.messages.length === 0) {
+          messageContainer.innerHTML = '<div class="message-row"></div>';
+        }
+
+        chatTitleContainer.textContent = current_conversation_name;
+      }
+    } else {
+      messagesFailureToast.showToast();
+    }
+  }
+
+  form.onsubmit = async function (event) {
+    event.preventDefault();
+
+    const sendMessageFailureToast = Toastify({
+      text: "Error sending message",
+      duration: 1000,
+    });
+
+    // prepare the form data
+    const formData = new FormData(form);
+    formData.append("receiverId", participant.id);
+    formData.append("receiverName", participant.name);
+    formData.append("avatar", participant.avatar || "");
+    formData.append("conversationId", current_conversation_id);
+
+    // send the request to server
+    let response = await fetch("/inbox/message", {
+      method: "POST",
+      body: formData,
+    });
+
+    // get response
+    let result = await response.json();
+
+    if (!result.errors) {
+      form.reset(); // reset the form
+    } else {
+      sendMessageFailureToast.showToast();
+    }
+  };
 </script>

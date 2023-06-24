@@ -35,6 +35,9 @@ exports.postLogin = (req, res) => {
       if (isMatch) {
         req.session.isLoggedIn = true;
         req.session.user = user;
+
+        req.loggedInUser = user;
+
         return req.session.save((err) => {
           console.log(err);
           res.redirect("/inbox");
