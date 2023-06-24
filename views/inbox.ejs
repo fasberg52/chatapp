@@ -184,8 +184,8 @@
                       <div class="card-footer d-block">
                         <form class="align-items-center" id="chat-form" enctype="multipart/form-data" method="post">
                           <div class="input-group mb-3">
-                            <input type="text" placeholder="پیام خود را بنویسید" class="form-control" name="message"
-                              aria-label="Amount (to the nearest dollar)" />
+                            <input type="text" placeholder="پیام خود را بنویسید" id="messageContent"
+                              class="form-control" name="message" aria-label="Amount (to the nearest dollar)" />
                             <div class="input-group-append custom-hover">
                               <span class="input-group-text">
                                 <button type="submit" class="btn p-0">
@@ -428,8 +428,9 @@
 
     form.onsubmit = async function (event) {
       event.preventDefault();
-
-      console.log(participant);
+      if (participant == null) {
+        return '';
+      }
 
       // prepare the form data
       const formData = new FormData(form);
@@ -450,7 +451,7 @@
           receiverName: participant.name,
           avatar: participant.avatar,
           conversationId: current_conversation_id,
-          message: 'This is Message'
+          message: $('#messageContent').val()
         }),
       });
 
