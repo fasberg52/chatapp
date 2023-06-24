@@ -460,11 +460,8 @@
   }
 
   async function getMessages(conversation_id, current_conversation_name) {
-    // messages failure toast
-    const messagesFailureToast = Toastify({
-      text: "Error loading messages!",
-      duration: 1000,
-    });
+
+
 
     let response = await fetch(`/inbox/messages/${conversation_id}`);
     const result = await response.json();
@@ -524,18 +521,13 @@
 
         chatTitleContainer.textContent = current_conversation_name;
       }
-    } else {
-      messagesFailureToast.showToast();
-    }
+    } 
   }
 
   form.onsubmit = async function (event) {
     event.preventDefault();
 
-    const sendMessageFailureToast = Toastify({
-      text: "Error sending message",
-      duration: 1000,
-    });
+
 
     // prepare the form data
     const formData = new FormData(form);
@@ -555,8 +547,6 @@
 
     if (!result.errors) {
       form.reset(); // reset the form
-    } else {
-      sendMessageFailureToast.showToast();
-    }
+    }   
   };
 </script>

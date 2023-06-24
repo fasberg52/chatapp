@@ -84,7 +84,7 @@ async function getMessages(req, res, next) {
         messages: messages,
         participant,
       },
-      user: req.user.userid,
+      user: req.session.user._id,
       conversation_id: req.params.conversation_id,
     });
   } catch (err) {
@@ -99,31 +99,20 @@ async function getMessages(req, res, next) {
 }
 
 async function sendMessage(req, res, next) {
-  if (req.body.message || (req.files && req.files.length > 0)) {
+  if (req.body.message) {
     try {
-      // save message text/attachment in database
-      let attachments = null;
-
-      if (req.files && req.files.length > 0) {
-        attachments = [];
-
-        req.files.forEach((file) => {
-          attachments.push(file.filename);
-        });
-      }
-
+      // save message text in database
+      const userid = req.session.user._id;
       const newMessage = new Message({
         text: req.body.message,
-        attachment: attachments,
+
         sender: {
-          id: req.user.userid,
-          name: req.user.username,
-          avatar: req.user.avatar || null,
+          id: userid,
+          name: req.session.user.name,
         },
         receiver: {
           id: req.body.receiverId,
           name: req.body.receiverName,
-          avatar: req.body.avatar || null,
         },
         conversation_id: req.body.conversationId,
       });
@@ -135,12 +124,11 @@ async function sendMessage(req, res, next) {
         message: {
           conversation_id: req.body.conversationId,
           sender: {
-            id: req.user.userid,
-            name: req.user.username,
-            avatar: req.user.avatar || null,
+            id: req.session.user._id,
+            name: req.session.user.name,
           },
           message: req.body.message,
-          attachment: attachments,
+
           date_time: result.date_time,
         },
       });
