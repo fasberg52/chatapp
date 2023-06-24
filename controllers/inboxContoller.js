@@ -2,10 +2,8 @@ const User = require("../models/People");
 const Conversation = require("../models/Conversation");
 const Message = require("../models/Message");
 
-
 async function getInbox(req, res, next) {
   try {
-    
     const userid = req.session.user._id;
     const user = req.session.user;
     const conversations = await Conversation.find({
@@ -22,21 +20,18 @@ async function getInbox(req, res, next) {
 }
 
 async function searchUser(req, res, next) {
-  const user = req.body.userSearch;
-  console.log(`>>>>>>>>> ${typeof(user)}`)
-  console.log("Request body:", req.body);
+  const user = req.body.user;
 
+  console.log(`>>>>>>>>> ${typeof user}`);
+  console.log("Request body:", req.body);
 
   try {
     const users = await User.find({
       email: user,
-      isAuthenticated: req.session.isLoggedIn,
-    }
-   
-    );
+    });
 
-    res.json(users)
-    console.log(`>>>>>>>>> ${users}`)
+    res.json(users);
+    console.log(`>>>>>>>>> ${users}`);
   } catch (error) {
     console.error("Search for users Error:", error);
     res
@@ -78,4 +73,3 @@ module.exports = {
   searchUser,
   addConversation,
 };
-

@@ -7,6 +7,9 @@ const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
 const flash = require("connect-flash");
 const csrf = require("csurf");
+var moment = require('jalali-moment');
+
+
 const Port = 3001;
 const MONGODB_URI = "mongodb://127.0.0.1:27017/messangerFarawin1";
 const app = express();
@@ -21,6 +24,9 @@ const store = new MongoDBStore({
 app.set("view engine", "ejs");
 app.set("views", "views");
 
+
+app.locals.moment = moment;
+
 const inboxRouter = require("./router/inboxRouter");
 const authRouter = require("./router/auth");
 app.use(
@@ -29,6 +35,7 @@ app.use(
   })
 );
 app.use(express.static(path.join(__dirname, "public")));
+app.use(express.json());
 
 app.use(
   session({

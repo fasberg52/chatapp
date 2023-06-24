@@ -27,11 +27,14 @@
                         </div>
                       </div>
                     </form>
-                    <% if(user) { %>
-                    <div class="card-body p-2">
+                    
+                    <div class="card-body p-2" id="conversation-list">
+                      
+                      <% data.forEach((conversation) => { %> 
+                      
                       <a
                         href="javascript:;"
-                        class="d-block p-2 rounded-lg bg-gradient-primary"
+                        class="d-block p-2 rounded-lg bg-gradient-primary mb-2"
                       >
                         <div class="d-flex p-2">
                           <img
@@ -43,23 +46,30 @@
                             <div
                               class="justify-content-between align-items-center"
                             >
-                              <h4 class="text-white text-right mb-0 mt-1 mr-1">
-                                sadads
+                              <div class="text-right mb-0 mt-1 mr-1">
+                                <h4 class="text-white mr-2">
+                                  <%= conversation.participant.name %>
+                                </h4>
+
+                                <div
+                                  class="conversation-date text-white mr-2 h6"
+                                >
+                                  <%=
+                                  moment(conversation.last_updated).locale('fa').fromNow('YYYY/M/D');
+                                  %>
+                                </div>
+
                                 <span class="badge badge-success"></span>
-                              </h4>
-                              <p
-                                class="text-white mb-0 mr-1 text-xs font-weight-normal"
-                              >
-                                متن آخرین پیام...
-                              </p>
+                              </div>
                             </div>
                           </div>
                         </div>
                       </a>
+                      <% } %> 
+                       <% }); %>
+                       
+                      
                     </div>
-                    <% } else { %>
-                    <h1>مخاطبی وجود ندارد</h1>
-                    <% } %>
                   </div>
                 </div>
                 <div class="col-lg-6">
@@ -117,10 +127,7 @@
                                   </button>
                                 </div>
                                 <div class="modal-body">
-                                  <form
-                                    id="add-conversation-form"
-                                    
-                                  >
+                                  <form id="add-conversation-form">
                                     <div class="form-group custom-form-group">
                                       <label
                                         for="recipient-name"
@@ -131,8 +138,8 @@
                                       <input
                                         type="text"
                                         class="form-control custom-form-contorl"
-                                        id="userSearch"
-                                        name="userSearch"
+                                        id="user"
+                                        name="user"
                                       />
                                       <p
                                         class="error b-danger text-center text-dark"
@@ -230,7 +237,7 @@
                           />
                           <div class="input-group-append custom-hover">
                             <span class="input-group-text">
-                              <button type="submit" class="btn">
+                              <button type="submit" class="btn p-0">
                                 <i class="fa fa-paper-plane"></i>
                               </button>
                             </span>
@@ -307,13 +314,13 @@
 <script>
   let typingTimer;
   const doneTypingInterval = 500;
-  const input = document.querySelector("input#userSearch");
+  const input = document.querySelector("input#user");
   const conversation_list = document.querySelector("#conversation-list");
   let users_placeholder = document.querySelector(".search_users");
 
   input.addEventListener("keyup", function () {
     clearTimeout(typingTimer);
-    // reset
+
     users_placeholder.style.display = "none";
 
     if (input.value) {
@@ -321,17 +328,18 @@
     }
   });
 
-  //on keydown, clear the countdown
   input.addEventListener("keydown", function () {
     clearTimeout(typingTimer);
   });
 
   async function searchUsers() {
     try {
+      const input = document.getElementById("user");
+      const email = input.value;
       let response = await fetch("/inbox/search", {
         method: "POST",
         body: JSON.stringify({
-          userSearch: input.value,
+          user: email,
         }),
         headers: {
           "Content-type": "application/json; charset=UTF-8",
@@ -346,7 +354,6 @@
       let result = await response.json();
       console.log("response received");
 
-      // handle error and response
       if (result.errors) {
         const errorplaceholder = document.querySelector("p.error");
         errorplaceholder.textContent = result.errors.common.msg;
@@ -392,10 +399,9 @@
       const result = await response.json();
 
       if (!result.errors) {
-        // reset
         users_placeholder.style.display = "none";
         input.value = name;
-        // reload the page after 1 second
+
         setTimeout(() => {
           location.reload();
         }, 1000);
