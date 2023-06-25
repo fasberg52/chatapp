@@ -2,7 +2,7 @@ const bcrypt = require("bcryptjs");
 const User = require("../models/People");
 const sendEmail = require("../util/email");
 const crypto = require("crypto");
-
+const { validationResult } = require("express-validator");
 exports.getLogin = (req, res) => {
   let message = req.flash("error");
 
@@ -36,8 +36,7 @@ exports.postLogin = (req, res) => {
         req.session.isLoggedIn = true;
         req.session.user = user;
 
-       
-        res.locals.loggedInUser = user
+        res.locals.loggedInUser = user;
         return req.session.save((err) => {
           console.log(err);
           res.redirect("/inbox");
@@ -60,7 +59,7 @@ exports.getSignup = (req, res) => {
   res.render("auth/signup", {
     path: "/signup",
     pageTitle: "ثبت نام",
-    errorMessage: req.flash("error"),
+    errorMessage: req.flash("error")[0],
   });
 };
 
@@ -69,6 +68,17 @@ exports.postSignup = (req, res) => {
   const name = req.body.name;
   const password = req.body.password;
   const confirmPassword = req.body.confirmPassword;
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    console.log(errors.array());
+
+    return res.status(422).render("auth/signup", {
+      path: "/signup",
+      pageTitle: "ثبت نام",
+      errorMessage: errors.array()[0].msg,
+    });
+  }
 
   User.findOne({ email: email })
 
@@ -137,12 +147,12 @@ exports.postReset = (req, res) => {
         return user.save();
       })
       .then((result) => {
-        res.redirect("/");
+        res.redirect("/login");
         sendEmail({
           userEmail: req.body.email,
           subject: "بازیابی رمز عبور",
           html: `<p>درخواست بازیابی رمز عبوز</p>
-                    <p>برای بازیابی رمز عبور <a href="http://localhost:3000/reset/${token}" >این لینک را</a> کلیک کنید </p>
+                    <p>برای بازیابی رمز عبور <a href="http://localhost:3001/reset/${token}" >این لینک را</a> کلیک کنید </p>
                     `,
         });
       })

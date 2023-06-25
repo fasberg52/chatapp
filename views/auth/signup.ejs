@@ -55,12 +55,13 @@
             action="/signup"
             method="post"
             class="login100-form validate-form"
+            novalidate
           >
          
 
             <span class="login100-form-title"> فرم عضویت </span>
-            <% if(errorMessage[0]){ %>
-              <div class="alert alert-danger custom-alert text-center"><%= errorMessage[0] %></div>
+            <% if(errorMessage){ %>
+              <div class="alert alert-danger custom-alert text-center"><%= errorMessage %></div>
               <% } %>
 
 

@@ -1,6 +1,7 @@
 const express = require("express");
 const User = require("./models/People");
 const path = require("path");
+const http = require("http");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const session = require("express-session");
@@ -70,6 +71,11 @@ app.use((req, res, next) => {
 
 app.use("/inbox", inboxRouter);
 app.use(authRouter);
+
+// socket creation
+
+const server = http.createServer(app);
+
 
 mongoose
   .connect(MONGODB_URI)
