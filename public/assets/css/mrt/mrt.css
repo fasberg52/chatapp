@@ -157,15 +157,42 @@
 .fa-paper-plane:hover {
   color: #fff;
 }
-.fa-plus,.fa-arrows-rotate:hover{
+.fa-plus,
+.fa-arrows-rotate:hover {
   cursor: pointer;
 }
-.custom-close{
-  margin-left: 0!important;
+.custom-close {
+  margin-left: 0 !important;
 }
-.custom-form-group{
-  text-align:right
+.custom-form-group {
+  text-align: right;
 }
-.custom-form-contorl{
-  border-radius:8px;
+.custom-form-contorl {
+  border-radius: 8px;
+}
+
+.you-message {
+  justify-content: start;
+}
+.other-message {
+  justify-items: start;
+  justify-content: end;
+}
+
+.you-message .message-text {
+  background: var(--green);
+  color: var(--dark);
+  border: 2px solid var(--dark);
+  border-radius: 14px 14px 0 14px;
+}
+
+.other-message .message-text {
+  background: var(--blue);
+  color: #111;
+  border: 2px solid var(--dark);
+  border-radius: 14px 14px 0 14px;
+}
+
+.you-message .message-content {
+  justify-items: end;
 }

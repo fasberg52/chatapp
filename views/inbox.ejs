@@ -1,246 +1,342 @@
 <%- include("./includes/head.ejs") %>
-  <div class="main-content" id="panel">
-    <div class="container-fluid pt-3">
-      <div class="row removable">
-        <div class="col-lg-12 px-sm-0">
-          <div class="card shadow-none px-0 bg-transparent mt-0 mb-4">
-            <div class="card-body px-0 pb-0">
-              <div class="px-0 pb-4">
-                <div class="row flex-row">
-                  <div class="col-lg-3 mb-4">
-                    <div class="card max-height-vh-70 h-100 overflow-auto overflow-x-hidden mb-5 mb-lg-0"
-                      style="max-height: 70vh">
-                      <form class="card-header">
-                        <div class="input-group mb-0">
-                          <input type="text" placeholder="جست و جو..." class="form-control"
-                            aria-label="Amount (to the nearest dollar)" />
-                          <div class="input-group-append">
+<div class="main-content" id="panel">
+  <div class="container-fluid pt-3">
+    <div class="row removable">
+      <div class="col-lg-12 px-sm-0">
+        <div class="card shadow-none px-0 bg-transparent mt-0 mb-4">
+          <div class="card-body px-0 pb-0">
+            <div class="px-0 pb-4">
+              <div class="row flex-row">
+                <div class="col-lg-3 mb-4">
+                  <div
+                    class="card max-height-vh-70 h-100 overflow-auto overflow-x-hidden mb-5 mb-lg-0"
+                    style="max-height: 70vh"
+                  >
+                    <form class="card-header">
+                      <div class="input-group mb-0">
+                        <input
+                          type="text"
+                          placeholder="جست و جو..."
+                          class="form-control"
+                          aria-label="Amount (to the nearest dollar)"
+                        />
+                        <div class="input-group-append">
+                          <span class="input-group-text">
+                            <i class="fa fa-search"></i>
+                          </span>
+                        </div>
+                      </div>
+                    </form>
+
+                    <div class="card-body p-2" id="conversation-list">
+                      <% data.forEach((conversation)=> { %> <%
+                      if(conversation.creator.id+""==userid+"") { %>
+                      <div
+                        class="d-block p-2 rounded-lg bg-gradient-primary mb-2"
+                        onclick="getMessages('<%= conversation._id %>', '<%= conversation.participant.name %>')"
+                      >
+                        <div class="d-flex p-2">
+                          <img
+                            alt="Image"
+                            src="/assets/image/images.png"
+                            class="avatar shadow"
+                          />
+                          <div class="ml-2">
+                            <div
+                              class="justify-content-between align-items-center"
+                            >
+                              <div class="text-right mb-0 mt-1 mr-1">
+                                <h4 class="text-white mr-2">
+                                  <%= conversation.participant.name %>
+                                </h4>
+
+                                <div
+                                  class="conversation-date text-white mr-2 h6"
+                                >
+                                  <%=
+                                  moment(conversation.last_updated).locale('fa').fromNow('YYYY/M/D');
+                                  %>
+                                </div>
+
+                                <span class="badge badge-success"></span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <% } else { %>
+
+                      <div
+                        class="d-block p-2 rounded-lg bg-gradient-primary mb-2"
+                        onclick="getMessages('<%= conversation._id %>', '<%= conversation.creator.name %>')"
+                      >
+                        <div class="d-flex p-2">
+                          <img
+                            alt="Image"
+                            src="/assets/image/images.png"
+                            class="avatar shadow"
+                          />
+                          <div class="ml-2">
+                            <div
+                              class="justify-content-between align-items-center"
+                            >
+                              <div class="text-right mb-0 mt-1 mr-1">
+                                <h4 class="text-white mr-2">
+                                  <%= conversation.creator.name %>
+                                </h4>
+
+                                <div
+                                  class="conversation-date text-white mr-2 h6"
+                                >
+                                  <%=
+                                  moment(conversation.last_updated).locale('fa').fromNow('YYYY/M/D');
+                                  %>
+                                </div>
+
+                                <span class="badge badge-success"></span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <% } %> <% }); %>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <div class="card max-height-vh-70" style="max-height: 70vh">
+                    <div class="card-header shadow-xl">
+                      <div class="row">
+                        <div class="col-md-8 d-flex justify-content-start">
+                          <div class="media align-items-center">
+                            <span class="avatar avatar-sm">
+                              <img
+                                alt="Image placeholder"
+                                src="/assets/image/img_avatar.png"
+                              />
+                            </span>
+
+                            <span>
+                              <% if(user) { %>
+                              <p class="mb-0 mr-2"><%= user.name %></p>
+                              <% } %>
+                            </span>
+                          </div>
+                        </div>
+                        <div
+                          class="col-md-4 d-flex align-items-center justify-content-end"
+                        >
+                          <i
+                            class="fa-solid fa-plus"
+                            data-toggle="modal"
+                            data-target="#exampleModal"
+                          ></i>
+                          <div
+                            class="modal fade"
+                            id="exampleModal"
+                            tabindex="-1"
+                            role="dialog"
+                            aria-labelledby="exampleModalLabel"
+                            aria-hidden="true"
+                          >
+                            <div class="modal-dialog" role="document">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h5
+                                    class="modal-title"
+                                    id="exampleModalLabel"
+                                  >
+                                    افزودن کاربر جدید
+                                  </h5>
+                                  <button
+                                    type="button"
+                                    class="close custom-close"
+                                    data-dismiss="modal"
+                                    aria-label="Close"
+                                  >
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                                </div>
+                                <div class="modal-body">
+                                  <form id="add-conversation-form">
+                                    <div class="form-group custom-form-group">
+                                      <label
+                                        for="recipient-name"
+                                        class="col-form-label"
+                                        >ایمیل</label
+                                      >
+
+                                      <input
+                                        type="text"
+                                        class="form-control custom-form-contorl"
+                                        id="user"
+                                        name="user"
+                                      />
+                                      <p
+                                        class="error b-danger text-center text-dark"
+                                      ></p>
+                                      <div class="search_users"></div>
+                                      <input
+                                        type="submit"
+                                        value="Submit"
+                                        class="d-none"
+                                      />
+                                    </div>
+                                  </form>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <i class="fa-solid fa-arrows-rotate mr-2"></i>
+                          <form action="logout" method="post">
+                            <button type="submit" class="btn p-2">
+                              <i
+                                class="fa-solid fa-right-from-bracket"
+                                type="submit"
+                              ></i>
+                            </button>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div
+                      class="card-body overflow-auto overflow-x-hidden"
+                      id="chat-message-list"
+                    >
+                      <div class="row justify-content-start mb-4">
+                        <div class="col-auto">
+                          <div class="card">
+                            <div class="card-body p-2">
+                              <p class="mb-1">asd</p>
+                              <div
+                                class="d-flex align-items-center text-sm opacity-6"
+                              >
+                                <i
+                                  class="far fa-clock mr-1"
+                                  aria-hidden="true"
+                                ></i>
+                                <small>12</small>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row justify-content-end text-right mb-4">
+                        <div class="col-auto">
+                          <div class="card bg-gradient-primary text-white">
+                            <div class="card-body p-2">
+                              <p class="mb-1">
+                                ها یره نوشتم برنامه خوبی از آب در آمد!<br />
+                              </p>
+                              <div
+                                class="d-flex align-items-center justify-content-end text-sm opacity-6"
+                              >
+                                <i
+                                  class="fa fa-check-double mr-1 text-xs"
+                                  aria-hidden="true"
+                                ></i>
+                                <small>15:42</small>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row mt-4">
+                        <div class="col-md-12 text-center">
+                          <span class="badge text-dark">چهارشنبه, 13:27</span>
+                        </div>
+                      </div>
+
+                      <div class="row justify-content-start">
+                        <div class="col-auto">
+                          <div class="card">
+                            <div class="card-body p-2">
+                              <p class="mb-0 text-sm">محمد در حال تایپ...</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="card-footer d-block">
+                      <form
+                        class="align-items-center"
+                        id="chat-form"
+                        enctype="multipart/form-data"
+                        method="post"
+                      >
+                        <div class="input-group mb-3">
+                          <input
+                            type="text"
+                            placeholder="پیام خود را بنویسید"
+                            id="messageContent"
+                            class="form-control"
+                            name="message"
+                            aria-label="Amount (to the nearest dollar)"
+                          />
+                          <div class="input-group-append custom-hover">
                             <span class="input-group-text">
-                              <i class="fa fa-search"></i>
+                              <button type="submit" class="btn p-0">
+                                <i class="fa fa-paper-plane"></i>
+                              </button>
                             </span>
                           </div>
                         </div>
                       </form>
-
-                      <div class="card-body p-2" id="conversation-list">
-                        <% data.forEach((conversation)=> { %> <% if(conversation.creator.id+""==userid+"") { %>
-                            <div class="d-block p-2 rounded-lg bg-gradient-primary mb-2"
-                              onclick="getMessages('<%= conversation._id %>', '<%= conversation.participant.name %>')">
-                              <div class="d-flex p-2">
-                                <img alt="Image" src="/assets/image/images.png" class="avatar shadow" />
-                                <div class="ml-2">
-                                  <div class="justify-content-between align-items-center">
-                                    <div class="text-right mb-0 mt-1 mr-1">
-                                      <h4 class="text-white mr-2">
-                                        <%= conversation.participant.name %>
-                                      </h4>
-
-                                      <div class="conversation-date text-white mr-2 h6">
-                                        <%= moment(conversation.last_updated).locale('fa').fromNow('YYYY/M/D'); %>
-                                      </div>
-
-                                      <span class="badge badge-success"></span>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-
-                            <% } else { %>
-
-                              <div class="d-block p-2 rounded-lg bg-gradient-primary mb-2"
-                                onclick="getMessages('<%= conversation._id %>', '<%= conversation.creator.name %>')">
-                                <div class="d-flex p-2">
-                                  <img alt="Image" src="/assets/image/images.png" class="avatar shadow" />
-                                  <div class="ml-2">
-                                    <div class="justify-content-between align-items-center">
-                                      <div class="text-right mb-0 mt-1 mr-1">
-                                        <h4 class="text-white mr-2">
-                                          <%= conversation.creator.name %>
-                                        </h4>
-
-                                        <div class="conversation-date text-white mr-2 h6">
-                                          <%= moment(conversation.last_updated).locale('fa').fromNow('YYYY/M/D'); %>
-                                        </div>
-
-                                        <span class="badge badge-success"></span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-
-                              <% } %>
-                                <% }); %>
-                      </div>
                     </div>
                   </div>
-                  <div class="col-lg-6">
-                    <div class="card max-height-vh-70" style="max-height: 70vh">
-                      <div class="card-header shadow-xl">
-                        <div class="row">
-                          <div class="col-md-8 d-flex justify-content-start">
-                            <div class="media align-items-center">
-                              <span class="avatar avatar-sm">
-                                <img alt="Image placeholder" src="/assets/image/img_avatar.png" />
-                              </span>
+                </div>
+                <div class="col-lg-3">
+                  <div
+                    class="card max-height-vh-70 h-100 overflow-auto overflow-x-hidden mb-5 mb-lg-0"
+                    style="max-height: 70vh"
+                  >
+                    <div class="card-body p-2">
+                      <a href="javascript:;" class="d-block p-2"> </a>
+                      <div class="p-2 text-center">
+                        <a href="javascript:;" class="d-block p-2">
+                          <img
+                            alt="Image"
+                            src="/assets/image/img_avatar.png"
+                            class="avatar avatar-lg shadow mb-0"
+                          />
+                        </a>
+                        <div class="ml-2 mt-0 mb-0 text-center">
+                          <div
+                            class="justify-content-between align-items-center"
+                          >
+                            <h3 class="mb-0 mt-1"><%= user.name %></h3>
 
-                              <span>
-                                <% if(user) { %>
-                                  <p class="mb-0 mr-2">
-                                    <%= user.name %>
-                                  </p>
-                                  <% } %>
-                              </span>
-                            </div>
-                          </div>
-                          <div class="col-md-4 d-flex align-items-center justify-content-end">
-                            <i class="fa-solid fa-plus" data-toggle="modal" data-target="#exampleModal"></i>
-                            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
-                              aria-labelledby="exampleModalLabel" aria-hidden="true">
-                              <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                  <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">
-                                      افزودن کاربر جدید
-                                    </h5>
-                                    <button type="button" class="close custom-close" data-dismiss="modal"
-                                      aria-label="Close">
-                                      <span aria-hidden="true">&times;</span>
-                                    </button>
-                                  </div>
-                                  <div class="modal-body">
-                                    <form id="add-conversation-form">
-                                      <div class="form-group custom-form-group">
-                                        <label for="recipient-name" class="col-form-label">ایمیل</label>
-
-                                        <input type="text" class="form-control custom-form-contorl" id="user"
-                                          name="user" />
-                                        <p class="error b-danger text-center text-dark"></p>
-                                        <div class="search_users"></div>
-                                        <input type="submit" value="Submit" class="d-none" />
-                                      </div>
-                                    </form>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <i class="fa-solid fa-arrows-rotate mr-2"></i>
-                            <form action="logout" method="post">
-                              <button type="submit" class="btn p-2">
-                                <i class="fa-solid fa-right-from-bracket" type="submit"></i>
-                              </button>
-                            </form>
+                            <a href="" class="text-sm">مشاهده پروفایل</a>
                           </div>
                         </div>
                       </div>
+                      <hr class="my-3" />
+                      <div class="mx-3">
+                        <h4 class="mb-0 text-right">ایمیل:</h4>
 
-                      <div class="card-body overflow-auto overflow-x-hidden" id="chat-message-list">
-                        <div class="row justify-content-start mb-4">
-                          <div class="col-auto">
-                            <div class="card">
-                              <div class="card-body p-2">
-                                <p class="mb-1">asd</p>
-                                <div class="d-flex align-items-center text-sm opacity-6">
-                                  <i class="far fa-clock mr-1" aria-hidden="true"></i>
-                                  <small>12</small>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="row justify-content-end text-right mb-4">
-                          <div class="col-auto">
-                            <div class="card bg-gradient-primary text-white">
-                              <div class="card-body p-2">
-                                <p class="mb-1">
-                                  ها یره نوشتم برنامه خوبی از آب در آمد!<br />
-                                </p>
-                                <div class="d-flex align-items-center justify-content-end text-sm opacity-6">
-                                  <i class="fa fa-check-double mr-1 text-xs" aria-hidden="true"></i>
-                                  <small>15:42</small>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="row mt-4">
-                          <div class="col-md-12 text-center">
-                            <span class="badge text-dark">چهارشنبه, 13:27</span>
-                          </div>
-                        </div>
-
-                        <div class="row justify-content-start">
-                          <div class="col-auto">
-                            <div class="card">
-                              <div class="card-body p-2">
-                                <p class="mb-0 text-sm">محمد در حال تایپ...</p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
+                        <span
+                          class="text-sm text-muted font-weight-normal text-right"
+                        >
+                          <p class="mb-0 mr-2"><%= user.email %></p>
+                        </span>
                       </div>
-
-                      <div class="card-footer d-block">
-                        <form class="align-items-center" id="chat-form" enctype="multipart/form-data" method="post">
-                          <div class="input-group mb-3">
-                            <input type="text" placeholder="پیام خود را بنویسید" id="messageContent"
-                              class="form-control" name="message" aria-label="Amount (to the nearest dollar)" />
-                            <div class="input-group-append custom-hover">
-                              <span class="input-group-text">
-                                <button type="submit" class="btn p-0">
-                                  <i class="fa fa-paper-plane"></i>
-                                </button>
+                      <hr class="my-3" />
+                      <div class="mx-3">
+                        <div class="d-flex align-items-center">
+                          <i class="fa fa-phone opacity-7 ml-1"></i>
+                          <div class="ml-3">
+                            <h5 class="mb-0 text-right">آیدی</h5>
+                            <span class="text-sm text-primary">
+                              <span
+                                class="text-sm text-muted font-weight-normal text-right"
+                              >
+                                <p class="mb-0 mr-2"><%= user._id %></p>
                               </span>
-                            </div>
-                          </div>
-                        </form>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-lg-3">
-                    <div class="card max-height-vh-70 h-100 overflow-auto overflow-x-hidden mb-5 mb-lg-0"
-                      style="max-height: 70vh">
-                      <div class="card-body p-2">
-                        <a href="javascript:;" class="d-block p-2"> </a>
-                        <div class="p-2 text-center">
-                          <a href="javascript:;" class="d-block p-2">
-                            <img alt="Image" src="/assets/image/img_avatar.png" class="avatar avatar-lg shadow mb-0" />
-                          </a>
-                          <div class="ml-2 mt-0 mb-0 text-center">
-                            <div class="justify-content-between align-items-center">
-                              <h3 class="mb-0 mt-1">
-                                <%= user.name %>
-                              </h3>
-
-                              <a href="" class="text-sm">مشاهده پروفایل</a>
-                            </div>
-                          </div>
-                        </div>
-                        <hr class="my-3" />
-                        <div class="mx-3">
-                          <h4 class="mb-0 text-right">ایمیل:</h4>
-
-                          <span class="text-sm text-muted font-weight-normal text-right">
-                            <p class="mb-0 mr-2">
-                              <%= user.email %>
-                            </p>
-                          </span>
-                        </div>
-                        <hr class="my-3" />
-                        <div class="mx-3">
-                          <div class="d-flex align-items-center">
-                            <i class="fa fa-phone opacity-7 ml-1"></i>
-                            <div class="ml-3">
-                              <h5 class="mb-0 text-right">آیدی</h5>
-                              <span class="text-sm text-primary">
-                                <span class="text-sm text-muted font-weight-normal text-right">
-                                  <p class="mb-0 mr-2">
-                                    <%= user._id %>
-                                  </p>
-                                </span>
-                              </span>
-                            </div>
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -253,213 +349,221 @@
         </div>
       </div>
     </div>
-    <!-- Footer -->
-    <%- include("./includes/end.ejs") %>
   </div>
-  <script>
-    let typingTimer;
-    const doneTypingInterval = 500;
-    const input = document.querySelector("input#user");
-    const conversation_list = document.querySelector("#conversation-list");
-    let users_placeholder = document.querySelector(".search_users");
-    const form = document.querySelector("#chat-form");
-    const messageContainer = document.querySelector("#chat-message-list");
-    const loggedinUserId = "<%= loggedInUser.userid %>";
-    let participant = null;
-    let current_conversation_id;
+  <!-- Footer -->
+  <%- include("./includes/end.ejs") %>
+</div>
+<script>
+  let typingTimer;
+  const doneTypingInterval = 500;
+  const input = document.querySelector("input#user");
+  const conversation_list = document.querySelector("#conversation-list");
+  let users_placeholder = document.querySelector(".search_users");
+  const form = document.querySelector("#chat-form");
+  const messageContainer = document.querySelector("#chat-message-list");
+  const loggedinUserId = "<%= loggedInUser.userid %>";
+  let participant = null;
+  let current_conversation_id;
 
-    input.addEventListener("keyup", function () {
-      clearTimeout(typingTimer);
+  input.addEventListener("keyup", function () {
+    clearTimeout(typingTimer);
 
-      users_placeholder.style.display = "none";
+    users_placeholder.style.display = "none";
 
-      if (input.value) {
-        typingTimer = setTimeout(searchUsers, doneTypingInterval); //user is "finished typing," send search request
+    if (input.value) {
+      typingTimer = setTimeout(searchUsers, doneTypingInterval); //user is "finished typing," send search request
+    }
+  });
+
+  input.addEventListener("keydown", function () {
+    clearTimeout(typingTimer);
+  });
+
+  async function searchUsers() {
+    try {
+      const input = document.getElementById("user");
+      const email = input.value;
+      let response = await fetch("/inbox/search", {
+        method: "POST",
+        body: JSON.stringify({
+          user: email,
+        }),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
+      });
+      console.log("Request sent.");
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok.");
       }
-    });
 
-    input.addEventListener("keydown", function () {
-      clearTimeout(typingTimer);
-    });
+      let result = await response.json();
+      console.log("response received");
 
-    async function searchUsers() {
-      try {
-        const input = document.getElementById("user");
-        const email = input.value;
-        let response = await fetch("/inbox/search", {
-          method: "POST",
-          body: JSON.stringify({
-            user: email,
-          }),
-          headers: {
-            "Content-type": "application/json; charset=UTF-8",
-          },
-        });
-        console.log("Request sent.");
-
-        if (!response.ok) {
-          throw new Error("Network response was not ok.");
-        }
-
-        let result = await response.json();
-        console.log("response received");
-
-        if (result.errors) {
-          const errorplaceholder = document.querySelector("p.error");
-          errorplaceholder.textContent = result.errors.common.msg;
-          errorplaceholder.style.display = "block";
-        } else {
-          if (result.length > 0) {
-            let generatedHtml = `<ul>`;
-            result.forEach((user) => {
-              generatedHtml += `<li onclick="createConversation('${user._id}', '${user.name}')">
+      if (result.errors) {
+        const errorplaceholder = document.querySelector("p.error");
+        errorplaceholder.textContent = result.errors.common.msg;
+        errorplaceholder.style.display = "block";
+      } else {
+        if (result.length > 0) {
+          let generatedHtml = `<ul>`;
+          result.forEach((user) => {
+            generatedHtml += `<li onclick="createConversation('${user._id}', '${user.name}')">
                 <div class="user bg-primary">
                   <div class="username">${user.name}</div>
                 </div>
               </li>`;
-            });
-            generatedHtml += `</ul>`;
-            users_placeholder.innerHTML = generatedHtml;
-            users_placeholder.style.display = "block";
-            console.log("generatedHtml");
-          }
+          });
+          generatedHtml += `</ul>`;
+          users_placeholder.innerHTML = generatedHtml;
+          users_placeholder.style.display = "block";
+          console.log("generatedHtml");
         }
-      } catch (err) {
-        console.log(`Error: ${err}`);
       }
+    } catch (err) {
+      console.log(`Error: ${err}`);
     }
+  }
 
-    async function createConversation(participant_id, name) {
-      try {
-        const response = await fetch("/inbox/conversation", {
-          method: "POST",
-          body: JSON.stringify({
-            participant: name,
-            id: participant_id,
-          }),
-          headers: {
-            "Content-type": "application/json; charset=UTF-8",
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error("Network response was not ok.");
-        }
-
-        const result = await response.json();
-
-        if (!result.errors) {
-          users_placeholder.style.display = "none";
-          input.value = name;
-
-          setTimeout(() => {
-            location.reload();
-          }, 1000);
-        } else {
-          throw new Error(result.errors.common.msg);
-        }
-      } catch (err) {
-        console.log(`Error: ${err}`);
-      }
-    }
-
-    async function getMessages(conversation_id, current_conversation_name) {
-
-
-
-      let response = await fetch(`/inbox/messages/${conversation_id}`);
-      const result = await response.json();
-
-      if (!result.errors && result.data) {
-        form.style.visibility = "visible";
-
-        const { data, user, conversation_id } = result;
-
-        participant = data.participant;
-        current_conversation_id = conversation_id;
-
-        if (data.messages) {
-          let allMessages = "";
-
-          if (data.messages.length > 0) {
-            data.messages.forEach((message) => {
-              let senderAvatar = message.sender.avatar
-                ? `./uploads/avatars/${message.sender.avatar}`
-                : "./images/nophoto.png";
-              const messageClass =
-                message.sender.id === loggedinUserId
-                  ? "you-message"
-                  : "other-message";
-              const showAvatar =
-                message.sender.id === loggedinUserId
-                  ? ""
-                  : `<img src="${senderAvatar}" alt="${message.sender.name}" />`;
-
-              // message attachments
-              let attachments = '<div class="attachments">';
-
-              if (message.attachment && message.attachment.length > 0) {
-                message.attachment.forEach((attachment) => {
-                  attachments += `<img src="./uploads/attachments/${attachment}" /> `;
-                });
-              }
-
-              attachments += "</div>";
-
-              // final message html
-              let messageHTML = `<div class="message-row ${messageClass}"><div class="message-content">
-              ${showAvatar}
-              <div class="message-text">${message.text}</div>
-              ${attachments}
-              <div class="message-time">تاریخ</div>
-            </div></div>`;
-
-              allMessages += messageHTML;
-              messageContainer.innerHTML = allMessages;
-            });
-          } else if (data.messages.length === 0) {
-            messageContainer.innerHTML = '<div class="message-row"></div>';
-          }
-
-          chatTitleContainer.textContent = current_conversation_name;
-        }
-      }
-    }
-
-    form.onsubmit = async function (event) {
-      event.preventDefault();
-      if (participant == null) {
-        return '';
-      }
-
-      // prepare the form data
-      const formData = new FormData(form);
-      formData.append("receiverId", participant.id);
-      formData.append("receiverName", participant.name);
-      formData.append("avatar", participant.avatar || "");
-      formData.append("conversationId", current_conversation_id);
-
-      // send the request to server
-      let response = await fetch("/inbox/message", {
+  async function createConversation(participant_id, name) {
+    try {
+      const response = await fetch("/inbox/conversation", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          // 'Content-Type': 'application/x-www-form-urlencoded',
-        },
         body: JSON.stringify({
-          receiverId: participant.id,
-          receiverName: participant.name,
-          avatar: participant.avatar,
-          conversationId: current_conversation_id,
-          message: $('#messageContent').val()
+          participant: name,
+          id: participant_id,
         }),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
       });
 
-      // get response
-      let result = await response.json();
+      if (!response.ok) {
+        throw new Error("Network response was not ok.");
+      }
+
+      const result = await response.json();
 
       if (!result.errors) {
-        form.reset(); // reset the form
+        users_placeholder.style.display = "none";
+        input.value = name;
+
+        setTimeout(() => {
+          location.reload();
+        }, 1000);
+      } else {
+        throw new Error(result.errors.common.msg);
       }
-    };
-  </script>
+    } catch (err) {
+      console.log(`Error: ${err}`);
+    }
+  }
+
+  async function getMessages(conversation_id, current_conversation_name) {
+    let response = await fetch(`/inbox/messages/${conversation_id}`);
+    const result = await response.json();
+
+    if (!result.errors && result.data) {
+      form.style.visibility = "visible";
+
+      const { data, user, conversation_id } = result;
+
+      participant = data.participant;
+      current_conversation_id = conversation_id;
+
+      if (data.messages) {
+        let allMessages = "";
+
+        if (data.messages.length > 0) {
+          data.messages.forEach((message) => {
+            let senderAvatar = message.sender.avatar
+              ? `./uploads/avatars/${message.sender.avatar}`
+              : "./images/nophoto.png";
+            const messageClass =
+              message.sender.id === loggedinUserId
+                ? "you-message"
+                : "other-message";
+            const showAvatar =
+              message.sender.id === loggedinUserId
+                ? ""
+                : `<img src="${senderAvatar}" alt="${message.sender.name}" />`;
+
+            // message attachments
+            let attachments = '<div class="attachments">';
+
+            if (message.attachment && message.attachment.length > 0) {
+              message.attachment.forEach((attachment) => {
+                attachments += `<img src="./uploads/attachments/${attachment}" /> `;
+              });
+            }
+
+            attachments += "</div>";
+
+            // final message html
+
+            let messageHTML = `<div class="row mb-4 ${messageClass}">
+              <div class="col-auto">
+                <div class="card message-content">
+                  <div class="card-body p-2">
+                    ${showAvatar}
+                    <div class="mb-1 message-text">${message.text}</div>
+                    ${attachments}
+                     <div class="d-flex align-items-center text-sm opacity-6">
+                      <i class="far fa-clock mr-1" aria-hidden="true"></i>
+                      <small>12</small> 
+                     </div>
+                    </div>
+                  </div>
+                </div>
+              </div>`;
+
+            allMessages += messageHTML;
+            messageContainer.innerHTML = allMessages;
+          });
+        } else if (data.messages.length === 0) {
+          messageContainer.innerHTML = '<div class="message-row"></div>';
+        }
+
+        chatTitleContainer.textContent = current_conversation_name;
+      }
+    }
+  }
+
+  form.onsubmit = async function (event) {
+    event.preventDefault();
+    if (participant == null) {
+      return "";
+    }
+
+    // prepare the form data
+    const formData = new FormData(form);
+    formData.append("receiverId", participant.id);
+    formData.append("receiverName", participant.name);
+    formData.append("avatar", participant.avatar || "");
+    formData.append("conversationId", current_conversation_id);
+
+    // send the request to server
+    let response = await fetch("/inbox/message", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: JSON.stringify({
+        receiverId: participant.id,
+        receiverName: participant.name,
+        avatar: participant.avatar,
+        conversationId: current_conversation_id,
+        message: $("#messageContent").val(),
+      }),
+    });
+
+    // get response
+    let result = await response.json();
+
+    if (!result.errors) {
+      form.reset(); // reset the form
+    }
+  };
+</script>
