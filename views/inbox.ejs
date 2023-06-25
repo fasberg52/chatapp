@@ -128,20 +128,15 @@
                         <div
                           class="col-md-4 d-flex align-items-center justify-content-end"
                         >
-                        
-                            <span id="conversation-partner "></span>
-                            <i
-                            class="fa-solid fa-trash ml-2"
-                           
-                          ></i>
-                            
-                          
+                          <span id="conversation-partner "></span>
+                          <i class="fa-solid fa-trash ml-2"></i>
+
                           <i
                             class="fa-solid fa-plus"
                             data-toggle="modal"
                             data-target="#exampleModal"
                           ></i>
-                         
+
                           <div
                             class="modal fade"
                             id="exampleModal"
@@ -319,7 +314,6 @@
   let users_placeholder = document.querySelector(".search_users");
   const form = document.querySelector("#chat-form");
   const messageContainer = document.querySelector("#chat-message-list");
-  const chatTitleContainer = document.querySelector('#conversation-partner');
   const loggedinUserId = "<%= user._id %>";
   let participant = null;
   let current_conversation_id;
@@ -458,28 +452,18 @@
                 ? ""
                 : `<div class="text-right">${message.sender.name}</div>`;
 
-            // message attachments
-            let attachments = '<div class="attachments">';
-
-            if (message.attachment && message.attachment.length > 0) {
-              message.attachment.forEach((attachment) => {
-                attachments += `<img src="./uploads/attachments/${attachment}" /> `;
-              });
-            }
-
-            attachments += "</div>";
-
             // final message html
+
             let messageHTML = `<div class="row mb-4 ${messageClass}">
               <div class="col-auto">
                 <div class="card message-content ${bgClass}">
                   <div class="card-body p-2">
                     ${showAvatar}
                     <div class="mb-1 message-text">${message.text}</div>
-                    ${attachments}
+            
                      <div class="d-flex align-items-center text-sm opacity-6">
                       <i class="far fa-clock mr-1" aria-hidden="true"></i>
-                      <small>13</small> 
+                      <small>${getMessageTime(message.date_time)}</small> 
                      </div>
                     </div>
                   </div>
@@ -492,12 +476,19 @@
         } else if (data.messages.length === 0) {
           messageContainer.innerHTML = '<div class="message-row"></div>';
         }
-
-        chatTitleContainer.textContent = current_conversation_name;
       }
     }
   }
+  function getMessageTime(date) {
+    const messageDate = new Date(date);
+    const hours = messageDate.getHours();
+    const minutes = messageDate.getMinutes();
+    return `${padZero(hours)}:${padZero(minutes)}`;
+  }
 
+  function padZero(num) {
+    return num.toString().padStart(2, "0");ظ
+  }
   form.onsubmit = async function (event) {
     event.preventDefault();
     if (participant == null) {

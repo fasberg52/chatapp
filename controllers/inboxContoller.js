@@ -120,19 +120,19 @@ async function sendMessage(req, res, next) {
 
       const result = await newMessage.save();
 
-      // emit socket event
-      // global.io.emit("new_message", {
-      //   message: {
-      //     conversation_id: req.body.conversationId,
-      //     sender: {
-      //       id: req.session.user._id,
-      //       name: req.session.user.name,
-      //     },
-      //     message: req.body.message,
+       //emit socket event
+      //  global.io.emit("new_message", {
+      //    message: {
+      //      conversation_id: req.body.conversationId,
+      //      sender: {
+      //        id: req.session.user._id,
+      //        name: req.session.user.name,
+      //      },
+      //      message: req.body.message,
 
-      //     date_time: result.date_time,
-      //   },
-      // });
+      //      date_time: result.date_time,
+      //    },
+      //  });
 
       res.status(200).json({
         message: "Successful!",
