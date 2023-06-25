@@ -73,7 +73,7 @@ async function getMessages(req, res, next) {
   try {
     const messages = await Message.find({
       conversation_id: req.params.conversation_id,
-    }).sort("-createdAt");
+    })
 
     const { participant } = await Conversation.findById(
       req.params.conversation_id
@@ -91,7 +91,7 @@ async function getMessages(req, res, next) {
     res.status(500).json({
       errors: {
         common: {
-          msg: "Unknows error occured!",
+          msg: "Unknows error",
         },
       },
     });

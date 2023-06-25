@@ -32,7 +32,7 @@
                       <% data.forEach((conversation)=> { %> <%
                       if(conversation.creator.id+""==userid+"") { %>
                       <div
-                        class="d-block p-2 rounded-lg bg-gradient-primary mb-2"
+                        class="d-block p-2 rounded-lg bg-gradient-primary mb-2 custom-pointer"
                         onclick="getMessages('<%= conversation._id %>', '<%= conversation.participant.name %>')"
                       >
                         <div class="d-flex p-2">
@@ -128,11 +128,20 @@
                         <div
                           class="col-md-4 d-flex align-items-center justify-content-end"
                         >
+                        
+                            <span id="conversation-partner "></span>
+                            <i
+                            class="fa-solid fa-trash ml-2"
+                           
+                          ></i>
+                            
+                          
                           <i
                             class="fa-solid fa-plus"
                             data-toggle="modal"
                             data-target="#exampleModal"
                           ></i>
+                         
                           <div
                             class="modal fade"
                             id="exampleModal"
@@ -189,7 +198,10 @@
                               </div>
                             </div>
                           </div>
-                          <i class="fa-solid fa-arrows-rotate mr-2"></i>
+                          <i
+                            class="fa-solid fa-arrows-rotate mr-2"
+                            onclick="reloadIcon()"
+                          ></i>
                           <form action="logout" method="post">
                             <button type="submit" class="btn p-2">
                               <i
@@ -205,61 +217,7 @@
                     <div
                       class="card-body overflow-auto overflow-x-hidden"
                       id="chat-message-list"
-                    >
-                      <div class="row justify-content-start mb-4">
-                        <div class="col-auto">
-                          <div class="card">
-                            <div class="card-body p-2">
-                              <p class="mb-1">asd</p>
-                              <div
-                                class="d-flex align-items-center text-sm opacity-6"
-                              >
-                                <i
-                                  class="far fa-clock mr-1"
-                                  aria-hidden="true"
-                                ></i>
-                                <small>12</small>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row justify-content-end text-right mb-4">
-                        <div class="col-auto">
-                          <div class="card bg-gradient-primary text-white">
-                            <div class="card-body p-2">
-                              <p class="mb-1">
-                                ها یره نوشتم برنامه خوبی از آب در آمد!<br />
-                              </p>
-                              <div
-                                class="d-flex align-items-center justify-content-end text-sm opacity-6"
-                              >
-                                <i
-                                  class="fa fa-check-double mr-1 text-xs"
-                                  aria-hidden="true"
-                                ></i>
-                                <small>15:42</small>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row mt-4">
-                        <div class="col-md-12 text-center">
-                          <span class="badge text-dark">چهارشنبه, 13:27</span>
-                        </div>
-                      </div>
-
-                      <div class="row justify-content-start">
-                        <div class="col-auto">
-                          <div class="card">
-                            <div class="card-body p-2">
-                              <p class="mb-0 text-sm">محمد در حال تایپ...</p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                    ></div>
 
                     <div class="card-footer d-block">
                       <form
@@ -361,7 +319,8 @@
   let users_placeholder = document.querySelector(".search_users");
   const form = document.querySelector("#chat-form");
   const messageContainer = document.querySelector("#chat-message-list");
-  const loggedinUserId = "<%= loggedInUser.userid %>";
+  const chatTitleContainer = document.querySelector('#conversation-partner');
+  const loggedinUserId = "<%= user._id %>";
   let participant = null;
   let current_conversation_id;
 
@@ -418,7 +377,6 @@
           generatedHtml += `</ul>`;
           users_placeholder.innerHTML = generatedHtml;
           users_placeholder.style.display = "block";
-          console.log("generatedHtml");
         }
       }
     } catch (err) {
@@ -426,6 +384,11 @@
     }
   }
 
+  function reloadIcon() {
+    setTimeout(() => {
+      location.reload();
+    }, 300);
+  }
   async function createConversation(participant_id, name) {
     try {
       const response = await fetch("/inbox/conversation", {
@@ -479,15 +442,21 @@
           data.messages.forEach((message) => {
             let senderAvatar = message.sender.avatar
               ? `./uploads/avatars/${message.sender.avatar}`
-              : "./images/nophoto.png";
+              : "assets/images/images.png";
             const messageClass =
               message.sender.id === loggedinUserId
                 ? "you-message"
-                : "other-message";
+                : `other-message`;
+
+            const bgClass =
+              message.sender.id === loggedinUserId
+                ? ""
+                : "bg-gradient-primary text-white";
+
             const showAvatar =
               message.sender.id === loggedinUserId
                 ? ""
-                : `<img src="${senderAvatar}" alt="${message.sender.name}" />`;
+                : `<div class="text-right">${message.sender.name}</div>`;
 
             // message attachments
             let attachments = '<div class="attachments">';
@@ -501,17 +470,16 @@
             attachments += "</div>";
 
             // final message html
-
             let messageHTML = `<div class="row mb-4 ${messageClass}">
               <div class="col-auto">
-                <div class="card message-content">
+                <div class="card message-content ${bgClass}">
                   <div class="card-body p-2">
                     ${showAvatar}
                     <div class="mb-1 message-text">${message.text}</div>
                     ${attachments}
                      <div class="d-flex align-items-center text-sm opacity-6">
                       <i class="far fa-clock mr-1" aria-hidden="true"></i>
-                      <small>12</small> 
+                      <small>13</small> 
                      </div>
                     </div>
                   </div>

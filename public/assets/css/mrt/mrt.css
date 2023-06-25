@@ -180,19 +180,16 @@
 }
 
 .you-message .message-text {
-  background: var(--green);
-  color: var(--dark);
-  border: 2px solid var(--dark);
-  border-radius: 14px 14px 0 14px;
+
+  color: #292929;
+
 }
 
-.other-message .message-text {
-  background: var(--blue);
-  color: #111;
-  border: 2px solid var(--dark);
-  border-radius: 14px 14px 0 14px;
-}
+
 
 .you-message .message-content {
   justify-items: end;
+}
+.custom-pointer{
+  cursor: pointer;
 }
